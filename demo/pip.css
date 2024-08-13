@@ -1,0 +1,180 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  line-height: normal;
+  font-weight: bolder;
+  color: #fff;
+  font-family: sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#pipVideoContainer {
+  background-color: #111;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+video {
+  position: absolute !important;
+  width: 100% !important;
+  height: 100% !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%);
+}
+
+#pipControls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 100% 0 0;
+  z-index: 99;
+  transition: all 0.3s ease;
+}
+
+#pipControls:hover {
+  opacity: 1;
+}
+
+#pipProgressBar {
+  width: 95%;
+  height: 5px;
+  cursor: pointer;
+  background-color: #999;
+  position: relative;
+}
+
+#watched-progress {
+  width: 0%;
+  height: 5px;
+  background-color: rgb(0, 123, 255);
+}
+
+#watched-now {
+  width: 15px;
+  height: 15px;
+  background-color: #fff;
+  border-radius: 50%;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+#watched-progress:hover {
+  transform: scaleY(1.5);
+}
+
+#pipControl {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+#pipControl:hover {
+  background-color: #555555a2;
+  backdrop-filter: blur(10px);
+  border-radius: 5px;
+}
+
+#pipControl > div {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  padding: 5px;
+  border-radius: 5px;
+}
+
+#pipControl > div:hover {
+  background-color: #555;
+  transition: all 0.3s ease;
+}
+
+#btnVolume svg:not(.visible) {
+  display: none;
+}
+
+#btnPlay svg:not(.visible) {
+  display: none;
+}
+
+#btnSetting {
+  position: relative;
+}
+
+#btnSetting.visible .setting {
+  opacity: 1;
+  pointer-events: auto;
+  background-color: #555;
+}
+
+.setting {
+  opacity: 0;
+  pointer-events: none;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  position: absolute;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  transition: all 0.3s ease;
+}
+
+.setting label {
+  width: 150px;
+}
+
+.setting input {
+  width: 100%;
+  text-align: center;
+  line-height: 2;
+  color: rgb(0, 123, 255);
+}
+
+.setting div {
+  background-color: #555;
+  border: 3px solid #999;
+  border-radius: 5px;
+}
+
+.setting div:hover {
+  background-color: #333;
+}
+
+.setting div:active {
+  background-color: #111;
+}
+
+#time {
+  color: #fff;
+  text-align: center;
+}
