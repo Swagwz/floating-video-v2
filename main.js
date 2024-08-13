@@ -848,7 +848,10 @@ updateControlBar();
           videoContainer.append(video); // 把影片貼回去原本的頁面
           document.querySelector("video").click();
           setTimeout(() => {
-            document.querySelector('button[data-uia="control-next"]').click();
+            document.querySelector('button[data-uia="control-next"]')?.click();
+            document
+              .querySelector('button[data-uia="next-episode-seamless-button"]')
+              ?.click();
           }, 1000);
         } else {
           document.querySelector('button[data-uia="control-next"]').click();
