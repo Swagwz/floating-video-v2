@@ -459,7 +459,6 @@ function secToDate(time) {
 async function enterPiP() {
   const video = findPlayingVideo();
   const videoContainer = video.parentNode;
-  console.log(videoContainer);
   let pipSession;
 
   function $doc(selector) {
@@ -710,9 +709,6 @@ async function enterPiP() {
       case "Enter":
         $pip("#btnPlay").click();
         break;
-      case "Escape":
-        pipSession.close();
-        break;
       case "m":
         video.muted = !video.muted;
         if (!video.muted) {
@@ -727,6 +723,7 @@ async function enterPiP() {
   });
 
   pipSession.document.addEventListener("keydown", (e) => {
+    console.log(e.key);
     switch (e.key) {
       case "ArrowUp":
         video.volume = Math.min(1, video.volume + 0.1);
@@ -742,12 +739,14 @@ async function enterPiP() {
       case "ArrowRight":
         $pip("#btnForward").click();
         break;
+      case "Escape":
+        pipSession.close();
+        break;
     }
   });
 
   // 關閉pip時觸發
   function onLeavePiP() {
-    console.log(videoContainer);
     if (this !== pipSession) return;
     videoContainer.prepend(video); // 把影片貼回去原本的頁面
     if (subtitle) subtitleContainer.append(subtitle);
