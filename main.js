@@ -676,7 +676,9 @@ async function enterPiP() {
         clearInterval(checkVideo);
       }
     }, 500);
-
+    navigation.addEventListener("navigate", () => {
+      $pip("#clickToNext").style.display = "flex";
+    });
     $pip("#clickToNext").addEventListener("click", () => {
       pipSession.close();
       enterPiP();
@@ -692,9 +694,10 @@ async function enterPiP() {
           $doc('button[data-uia="next-episode-seamless-button"]')?.click();
         }, 500);
       } else {
-        $doc('button[data-uia="control-next"]').click();
         videoContainer.append(video);
+        $doc('button[data-uia="control-next"]').click();
       }
+      $pip("#clickToNext").style.display = "flex";
     });
   }
 
