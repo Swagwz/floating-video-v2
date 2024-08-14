@@ -721,7 +721,6 @@ async function enterPiP() {
         }
         break;
     }
-    console.log(e.key);
   });
 
   pipSession.document.addEventListener("keydown", (e) => {
