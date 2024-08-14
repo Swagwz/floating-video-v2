@@ -1,6 +1,6 @@
 {
   "name": "netflix,動畫瘋 always on top,picture in picture with control-bar",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Best google extension for watching netflix,making netflix video always on top with control-bar",
   "manifest_version": 3,
   "icons": {
