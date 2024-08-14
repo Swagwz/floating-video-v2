@@ -459,7 +459,7 @@ function secToDate(time) {
 async function enterPiP() {
   const video = findPlayingVideo();
   const videoContainer = video.parentNode;
-
+  console.log(videoContainer);
   let pipSession;
 
   function $doc(selector) {
@@ -744,8 +744,9 @@ async function enterPiP() {
 
   // 關閉pip時觸發
   function onLeavePiP() {
+    console.log(videoContainer);
     if (this !== pipSession) return;
-    videoContainer.append(video); // 把影片貼回去原本的頁面
+    videoContainer.prepend(video); // 把影片貼回去原本的頁面
     if (subtitle) subtitleContainer.append(subtitle);
     clearInterval(updateTimerInterval);
     clearInterval(checkVideo);
