@@ -516,7 +516,7 @@ async function enterPiP() {
   }
 
   // netflix 調用快進後退需要
-  let videoPlayer, player;
+  let videoPlayer, player, checkVideo;
   if (isNetflix) {
     videoPlayer =
       window.netflix.appContext.state.playerApp.getAPI().videoPlayer;
@@ -666,7 +666,7 @@ async function enterPiP() {
   }
 
   if (isNetflix) {
-    const checkVideo = setInterval(() => {
+    checkVideo = setInterval(() => {
       if (video !== $doc("video") && $doc("video")) {
         $pip("#clickToNext").disabled = false;
         $pip("#clickToNext").textContent = "CLICK TO NEXT EPISODE";
@@ -698,12 +698,58 @@ async function enterPiP() {
     });
   }
 
+  // pip window event
+  pipSession.document.addEventListener("keypress", (e) => {
+    switch (e.key) {
+      case " ":
+        $pip("#btnPlay").click();
+        break;
+      case "Enter":
+        $pip("#btnPlay").click();
+        break;
+      case "Escape":
+        pipSession.close();
+        break;
+      case "m":
+        video.muted = !video.muted;
+        if (!video.muted) {
+          $pip(".sound").classList.add("visible");
+          $pip(".mute").classList.remove("visible");
+        } else {
+          $pip(".sound").classList.remove("visible");
+          $pip(".mute").classList.add("visible");
+        }
+        break;
+    }
+    console.log(e.key);
+  });
+
+  pipSession.document.addEventListener("keydown", (e) => {
+    switch (e.key) {
+      case "ArrowUp":
+        video.volume = Math.min(1, video.volume + 0.1);
+        $pip("#tuneVolume").value = video.volume;
+        break;
+      case "ArrowDown":
+        video.volume = Math.max(0, video.volume - 0.1);
+        $pip("#tuneVolume").value = video.volume;
+        break;
+      case "ArrowLeft":
+        $pip("#btnBackward").click();
+        break;
+      case "ArrowRight":
+        $pip("#btnForward").click();
+        break;
+    }
+  });
+
   // 關閉pip時觸發
   function onLeavePiP() {
     if (this !== pipSession) return;
     videoContainer.append(video); // 把影片貼回去原本的頁面
     if (subtitle) subtitleContainer.append(subtitle);
     clearInterval(updateTimerInterval);
+    clearInterval(checkVideo);
     pipSession = null;
   }
   pipSession.addEventListener("unload", onLeavePiP.bind(pipSession), {
