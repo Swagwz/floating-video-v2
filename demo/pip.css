@@ -177,3 +177,17 @@ video {
   color: #fff;
   text-align: center;
 }
+
+#clickToNext {
+  font-size: large;
+  z-index: 9999;
+
+  background-color: #000;
+  color: #fff;
+
+  width: 100%;
+  height: 100%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}

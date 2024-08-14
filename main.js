@@ -75,6 +75,7 @@ function htmlBody() {
         </div>
       </div>
     </div>
+    <button disabled id="clickToNext">VIDEO IS NOT READY YET</button>
   </div>`;
 }
 
@@ -258,6 +259,21 @@ background-color: #111;
 color: #fff;
 text-align: center;
 }
+
+#clickToNext {
+  font-size: large;
+  z-index: 9999;
+
+  background-color: #000;
+  color: #fff;
+
+  width: 100%;
+  height: 100%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
 @media screen and (max-width: 660px) {
 #pipControl {
   gap: 10px;
@@ -650,6 +666,22 @@ async function enterPiP() {
   }
 
   if (isNetflix) {
+    const checkVideo = setInterval(() => {
+      if (video !== $doc("video") && $doc("video")) {
+        $pip("#clickToNext").disabled = false;
+        $pip("#clickToNext").textContent = "CLICK TO NEXT EPISODE";
+        $pip("#clickToNext").style.color = "#000";
+        $pip("#clickToNext").style.backgroundColor = "#fff";
+        $pip("#clickToNext").style.display = "flex";
+        clearInterval(checkVideo);
+      }
+    }, 500);
+
+    $pip("#clickToNext").addEventListener("click", () => {
+      pipSession.close();
+      enterPiP();
+    });
+
     $pip("#nextEpisode").addEventListener("click", async () => {
       if (!$doc('button[data-uia="control-next"]')) {
         videoContainer.append(video);
@@ -663,39 +695,7 @@ async function enterPiP() {
         $doc('button[data-uia="control-next"]').click();
         videoContainer.append(video);
       }
-
-      $pip("#pipVideoContainer").insertAdjacentHTML(
-        "beforeend",
-        `<button disabled id="clickToNext" style="background-color:#000;font-size:large;z-index:9999;width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;">VIDEO IS NOT READY YET</button>`
-      );
-
-      const checkVideo = setInterval(() => {
-        if (video !== $doc("video") && $doc("video")) {
-          $pip("#clickToNext").disabled = false;
-          $pip("#clickToNext").textContent = "CLICK TO NEXT EPISODE";
-          $pip("#clickToNext").style.color = "#000";
-          $pip("#clickToNext").style.backgroundColor = "#fff";
-          clearInterval(checkVideo);
-        }
-      }, 500);
-
-      $pip("#clickToNext").addEventListener("click", () => {
-        pipSession.close();
-        enterPiP();
-      });
     });
-  }
-
-  // netflix自動下一集
-  if (isNetflix) {
-    let autoNext = setInterval(() => {
-      if ($doc('button[data-uia="next-episode-seamless-button"]')) {
-        $doc('button[data-uia="next-episode-seamless-button"]').click();
-        pipSession.close();
-        enterPiP();
-        clearInterval(autoNext);
-      }
-    }, 250);
   }
 
   // 關閉pip時觸發
