@@ -562,8 +562,12 @@ async function enterPiP() {
   progressDot.addEventListener("drag", function (e) {
     if (e.clientX === 0 && e.clientY === 0) return; // 防止拉到進度條外，導致bug
     const percentage = calcPercent(e);
-    updateTimer();
+
     setProgress(percentage);
+
+    currentTime.textContent = secToDate(
+      (progressDot.style.left.replace("%", "") * video.duration) / 100
+    );
   });
 
   progressDot.addEventListener("dragend", function (e) {
@@ -587,8 +591,8 @@ async function enterPiP() {
     clearInterval(updateTimerInterval);
 
     const percentage = calcPercent(e);
-    updateTimer();
     setProgress(percentage);
+    updateTimer();
   });
 
   progressBar.addEventListener("mouseup", function (e) {
@@ -644,6 +648,7 @@ async function enterPiP() {
       $doc("#nextEpisode").click();
     });
   }
+
   if (isNetflix) {
     $pip("#nextEpisode").addEventListener("click", async () => {
       if (!$doc('button[data-uia="control-next"]')) {
@@ -679,6 +684,18 @@ async function enterPiP() {
         enterPiP();
       });
     });
+  }
+
+  // netflix自動下一集
+  if (isNetflix) {
+    let autoNext = setInterval(() => {
+      if ($doc('button[data-uia="next-episode-seamless-button"]')) {
+        $doc('button[data-uia="next-episode-seamless-button"]').click();
+        pipSession.close();
+        enterPiP();
+        clearInterval(autoNext);
+      }
+    }, 250);
   }
 
   // 關閉pip時觸發
