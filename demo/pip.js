@@ -1,25 +1,24 @@
-const video = document.querySelector("video");
+function $doc(selector) {
+  return document.querySelector(selector);
+}
+const video = $doc("video");
 // 音量相關
-const btnSound = document.querySelector(".sound");
-const btnMute = document.querySelector(".mute");
-const inputVolume = document.querySelector("#tuneVolume");
+const btnSound = $doc(".sound");
+const btnMute = $doc(".mute");
+const inputVolume = $doc("#tuneVolume");
 
-const isNetflix = document.querySelector(".player-timedtext") ? true : false;
+const isNetflix = $doc(".player-timedtext") ? true : false;
 let currentVolume = video.volume;
 
 inputVolume.value = currentVolume;
 
 function updateSoundUI() {
   if (video.volume > 0 && inputVolume.value > 0) {
-    document.querySelector(".sound").classList.add("visible");
-    document.querySelector(".mute").classList.remove("visible");
-  } else if (video.volume == 0 && inputVolume.value == 0) {
-    document.querySelector(".sound").classList.remove("visible");
-    document.querySelector(".mute").classList.add("visible");
+    $doc(".sound").classList.remove("hidden");
+    $doc(".mute").classList.add("hidden");
   } else {
-    console.log("音量相關錯誤");
-    if (video.volume != inputVolume.value)
-      console.log("音量不一樣", video.volume, inputVolume.value);
+    $doc(".sound").classList.add("hidden");
+    $doc(".mute").classList.remove("hidden");
   }
 }
 
@@ -47,15 +46,15 @@ inputVolume.addEventListener("mouseup", (e) => {
 });
 
 // 播放相關
-const btnPlay = document.querySelector("#btnPlay");
+const btnPlay = $doc("#btnPlay");
 
 function updataPlay() {
   if (!video.paused) {
-    document.querySelector(".play").classList.remove("visible");
-    document.querySelector(".pause").classList.add("visible");
+    $doc(".play").classList.add("hidden");
+    $doc(".pause").classList.remove("hidden");
   } else {
-    document.querySelector(".play").classList.add("visible");
-    document.querySelector(".pause").classList.remove("visible");
+    $doc(".play").classList.remove("hidden");
+    $doc(".pause").classList.add("hidden");
   }
 }
 
@@ -69,33 +68,19 @@ btnPlay.addEventListener("click", () => {
 });
 
 // 快轉、後退相關
-const btnForward = document.querySelector("#btnForward");
-const btnBackward = document.querySelector("#btnBackward");
-
-// check youtube streaming
-function checkIsStreaming() {
-  const liveBadge = document.querySelector(".ytp-live-badge");
-  return liveBadge && !liveBadge.getAttribute("disabled");
-}
+const btnForward = $doc("#btnForward");
+const btnBackward = $doc("#btnBackward");
 
 btnForward.addEventListener("click", () => {
-  let skipTime = +document.querySelector("#skiptime").value || 10;
+  let skipTime = +$doc("#skiptime").value || 10;
 
   if (isNetflix) return;
-
-  if (checkIsStreaming()) {
-    const streamOffset = video.duration - video.currentTime;
-    video.currentTime = Math.min(
-      video.currentTime + skipTime + streamOffset,
-      video.duration
-    );
-  }
 
   video.currentTime = Math.min(video.currentTime + skipTime, video.duration);
 });
 
 btnBackward.addEventListener("click", () => {
-  let skipTime = +document.querySelector("#skiptime").value || 10;
+  let skipTime = +$doc("#skiptime").value || 10;
 
   if (isNetflix) return;
 
@@ -103,24 +88,25 @@ btnBackward.addEventListener("click", () => {
 });
 
 // 設定相關
-const btnDone = document.querySelector(".setting div");
-const openSetting = document.querySelector("#btnSetting svg");
-const btnSetting = document.querySelector("#btnSetting");
-const inputPlaybackRate = document.querySelector("#playback");
-const inputSkiptime = document.querySelector("#skiptime");
+const btnDone = $doc(".setting div");
+const openSetting = $doc("#btnSetting svg");
+const settingModal = $doc(".setting");
+
+const inputPlaybackRate = $doc("#playback");
+const inputSkiptime = $doc("#skiptime");
 
 inputPlaybackRate.value =
   video.playbackRate || localStorage.getItem("playbackRate") || 1;
 inputSkiptime.value = localStorage.getItem("skipTime") || 10;
 
 openSetting.addEventListener("click", () => {
-  btnSetting.classList.toggle("visible");
+  settingModal.classList.toggle("hidden");
   validatePlayback.bind(inputPlaybackRate)();
   validateSkiptime.bind(inputSkiptime)();
 });
 
 btnDone.addEventListener("click", function () {
-  btnSetting.classList.remove("visible");
+  settingModal.classList.add("hidden");
   validatePlayback.bind(inputPlaybackRate)();
   validateSkiptime.bind(inputSkiptime)();
 });
@@ -138,8 +124,8 @@ function validateSkiptime() {
 }
 
 // 時間、進度條相關
-const currentTime = document.querySelector("span.currentTime");
-const duration = document.querySelector("span.duration");
+const currentTime = $doc("span.currentTime");
+const duration = $doc("span.duration");
 
 function secToDate(time) {
   let result = "";
@@ -160,9 +146,9 @@ function secToDate(time) {
 }
 
 //  拉動進度條
-const progressBar = document.querySelector("#pipProgressBar");
-const progress = document.querySelector("#watched-progress");
-const progressDot = document.querySelector("#watched-now");
+const progressBar = $doc("#pipProgressBar");
+const progress = $doc("#watched-progress");
+const progressDot = $doc("#watched-now");
 
 function setProgress(percentage) {
   progress.style.width = percentage + "%";
@@ -269,11 +255,11 @@ function updateTimer() {
 
 function updatePlayBtn() {
   if (video.currentTime < video.duration && !video.paused) {
-    document.querySelector("svg.play").classList.remove("visible");
-    document.querySelector("svg.pause").classList.add("visible");
+    $doc("svg.play").classList.add("hidden");
+    $doc("svg.pause").classList.remove("hidden");
   } else {
-    document.querySelector("svg.play").classList.add("visible");
-    document.querySelector("svg.pause").classList.remove("visible");
+    $doc("svg.play").classList.remove("hidden");
+    $doc("svg.pause").classList.add("hidden");
   }
 }
 
