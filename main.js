@@ -24,6 +24,7 @@ function htmlBody() {
   <div id="pipControls">
 
     <div id="pipProgressBar">
+      <div id="progressTime">00:00</div>
       <div id="watched-progress"></div>
       <div id="watched-now" draggable="true"></div>
     </div>
@@ -128,6 +129,16 @@ body #pipVideoContainer #videoTitle:hover {
   opacity: 1;
   transform: translateY(0%);
 }
+@media screen and (max-width: 600px) {
+  body #pipVideoContainer #videoTitle {
+    font-size: 20px;
+  }
+}
+@media screen and (max-width: 450px) {
+  body #pipVideoContainer #videoTitle {
+    font-size: 16px;
+  }
+}
 body #pipVideoContainer video {
   position: absolute !important;
   top: 50% !important;
@@ -160,6 +171,26 @@ body #pipControls #pipProgressBar {
   height: 5px;
   background-color: #999;
   cursor: pointer;
+}
+body #pipControls #pipProgressBar #progressTime {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background-color: rgba(85, 85, 85, 0.6352941176);
+  color: #fff;
+  width: 60px;
+  padding: 5px;
+  font-size: 16px;
+  border-radius: 5px;
+  text-align: center;
+  display: none;
+}
+@media screen and (max-width: 470px) {
+  body #pipControls #pipProgressBar #progressTime {
+    width: 50px;
+    padding: 3px;
+    font-size: 12px;
+  }
 }
 body #pipControls #pipProgressBar #watched-progress {
   width: 0%;
@@ -282,7 +313,7 @@ body #pipControls #pipControl div:hover {
 }
 @media screen and (max-width: 470px) {
   #time {
-    font-size: small;
+    font-size: 12px;
   }
 }
 
@@ -542,9 +573,56 @@ async function enterPiP() {
 
   // 時間、進度條相關
   //  拉動進度條
+  const progressTime = $pip("#progressTime");
+
   function setProgress(percentage) {
     progress.style.width = percentage + "%";
     progressDot.style.left = percentage + "%";
+  }
+
+  function showProgressTime(e) {
+    const rect = progressBar.getBoundingClientRect();
+    let offsetX = e.clientX - rect.left;
+    const percentage = calcPercent(e);
+    const width = progressTime.offsetWidth;
+    if (offsetX < width / 2) {
+      progressTime.style.left = 0;
+    } else if (offsetX > width / 2 && offsetX < rect.width - width / 2) {
+      progressTime.style.left = (percentage * rect.width) / 100 - width / 2;
+    } else if (offsetX > rect.width - width / 2) {
+      progressTime.style.left = rect.width - width;
+    }
+    progressTime.textContent = secToDate((percentage * video.duration) / 100);
+  }
+
+  function updateTimer() {
+    currentTime.textContent = secToDate(video.currentTime);
+    duration.textContent = secToDate(video.duration);
+  }
+
+  function updatePlayBtn() {
+    if (video.currentTime < video.duration && !video.paused) {
+      $pip("svg.play").classList.add("hidden");
+      $pip("svg.pause").classList.remove("hidden");
+    } else {
+      $pip("svg.play").classList.remove("hidden");
+      $pip("svg.pause").classList.add("hidden");
+    }
+  }
+
+  function updateControlBar() {
+    let percent = video.currentTime / video.duration;
+    setProgress(percent * 100);
+  }
+
+  function calcPercent(e) {
+    const rect = progressBar.getBoundingClientRect();
+    let offsetX = e.clientX - rect.left;
+
+    if (offsetX < 0) offsetX = 0;
+    if (offsetX > rect.width) offsetX = rect.width;
+    const percentage = (offsetX / rect.width) * 100;
+    return percentage;
   }
 
   progressDot.addEventListener("dragstart", function (e) {
@@ -560,6 +638,7 @@ async function enterPiP() {
     currentTime.textContent = secToDate(
       (progressDot.style.left.replace("%", "") * video.duration) / 100
     );
+    showProgressTime(e);
   });
 
   progressDot.addEventListener("dragend", function (e) {
@@ -604,37 +683,19 @@ async function enterPiP() {
     }, 250);
   });
 
-  function updateTimer() {
-    currentTime.textContent = secToDate(video.currentTime);
-    duration.textContent = secToDate(video.duration);
-  }
+  progressBar.addEventListener("mouseenter", function (e) {
+    progressTime.style.display = "block";
+  });
 
-  function updatePlayBtn() {
-    if (video.currentTime < video.duration && !video.paused) {
-      $pip("svg.play").classList.add("hidden");
-      $pip("svg.pause").classList.remove("hidden");
-    } else {
-      $pip("svg.play").classList.remove("hidden");
-      $pip("svg.pause").classList.add("hidden");
-    }
-  }
+  progressBar.addEventListener("mousemove", (e) => {
+    showProgressTime(e);
+  });
 
-  function updateControlBar() {
-    let percent = video.currentTime / video.duration;
-    setProgress(percent * 100);
-  }
+  progressBar.addEventListener("mouseleave", function (e) {
+    progressTime.style.display = "none";
+  });
 
-  function calcPercent(e) {
-    const rect = progressBar.getBoundingClientRect();
-    let offsetX = e.clientX - rect.left;
-
-    if (offsetX < 0) offsetX = 0;
-    if (offsetX > rect.width) offsetX = rect.width;
-    const percentage = (offsetX / rect.width) * 100;
-    return percentage;
-  }
-
-  function navigating() {
+  function showNextEp() {
     $pip("#clickToNext").style.display = "flex";
   }
 
@@ -657,7 +718,7 @@ async function enterPiP() {
       }
     }, 500);
 
-    navigation.addEventListener("navigate", navigating);
+    navigation.addEventListener("navigate", showNextEp);
 
     $pip("#nextEpisode").addEventListener("click", () => {
       if (!$doc('button[data-uia="control-next"]')) {
@@ -774,6 +835,11 @@ async function enterPiP() {
     }
   });
 
+  function removeInfo() {
+    $pip("#pipControls").classList.remove("slide-in");
+    $pip("#videoTitle").classList.remove("top-slide-in");
+  }
+
   let mouseStopped, mouseTimer;
   ["mousemove", "click"].forEach((ev) => {
     pipSession.document.addEventListener(ev, () => {
@@ -787,17 +853,13 @@ async function enterPiP() {
         mouseStopped = true;
         if (mouseStopped) {
           $pip("main").style.cursor = "none";
-          $pip("#pipControls").classList.remove("slide-in");
-          $pip("#videoTitle").classList.remove("top-slide-in");
+          removeInfo();
         }
       }, 3000);
     });
   });
 
-  pipSession.document.addEventListener("mouseout", () => {
-    $pip("#pipControls").classList.remove("slide-in");
-    $pip("#videoTitle").classList.remove("top-slide-in");
-  });
+  pipSession.addEventListener("mouseout", removeInfo);
 
   // 關閉pip時觸發
   function onLeavePiP() {
@@ -808,7 +870,8 @@ async function enterPiP() {
     clearInterval(checkVideo);
     clearInterval(getVideoTitle);
     clearTimeout(mouseTimer);
-    removeEventListener("navigate", navigating);
+    navigation.removeEventListener("navigate", showNextEp);
+    pipSession.removeEventListener("mouseout", removeInfo);
     pipSession = null;
   }
   pipSession.addEventListener("unload", onLeavePiP.bind(pipSession), {

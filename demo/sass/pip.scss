@@ -37,6 +37,12 @@ body {
         opacity: 1;
         transform: translateY(0%);
       }
+      @media screen and (max-width: 600px) {
+        font-size: 20px;
+      }
+      @media screen and (max-width: 450px) {
+        font-size: 16px;
+      }
     }
     video {
       position: absolute !important;
@@ -70,6 +76,25 @@ body {
       height: 5px;
       background-color: #999;
       cursor: pointer;
+
+      #progressTime {
+        position: absolute;
+        top: -40px;
+        left: 0;
+        background-color: #555555a2;
+        color: #fff;
+        width: 60px;
+        padding: 5px;
+        font-size: 16px;
+        border-radius: 5px;
+        text-align: center;
+        display: none;
+        @media screen and (max-width: 470px) {
+          width: 50px;
+          padding: 3px;
+          font-size: 12px;
+        }
+      }
 
       #watched-progress {
         width: 0%;
@@ -193,7 +218,7 @@ body {
   color: #fff;
   text-align: center;
   @media screen and (max-width: 470px) {
-    font-size: small;
+    font-size: 12px;
   }
 }
 

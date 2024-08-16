@@ -40,6 +40,16 @@ body #pipVideoContainer #videoTitle:hover {
   opacity: 1;
   transform: translateY(0%);
 }
+@media screen and (max-width: 600px) {
+  body #pipVideoContainer #videoTitle {
+    font-size: 20px;
+  }
+}
+@media screen and (max-width: 450px) {
+  body #pipVideoContainer #videoTitle {
+    font-size: 16px;
+  }
+}
 body #pipVideoContainer video {
   position: absolute !important;
   top: 50% !important;
@@ -72,6 +82,26 @@ body #pipControls #pipProgressBar {
   height: 5px;
   background-color: #999;
   cursor: pointer;
+}
+body #pipControls #pipProgressBar #progressTime {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background-color: rgba(85, 85, 85, 0.6352941176);
+  color: #fff;
+  width: 60px;
+  padding: 5px;
+  font-size: 16px;
+  border-radius: 5px;
+  text-align: center;
+  display: none;
+}
+@media screen and (max-width: 470px) {
+  body #pipControls #pipProgressBar #progressTime {
+    width: 50px;
+    padding: 3px;
+    font-size: 12px;
+  }
 }
 body #pipControls #pipProgressBar #watched-progress {
   width: 0%;
@@ -194,7 +224,7 @@ body #pipControls #pipControl div:hover {
 }
 @media screen and (max-width: 470px) {
   #time {
-    font-size: small;
+    font-size: 12px;
   }
 }
 
