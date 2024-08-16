@@ -32,7 +32,7 @@ When the floating window is focused, there are some hotkeys you can use<br>
   </li>
 </ol>
 
-### Contact me
+## Contact me
 <ul>
   <li><a href="https://www.instagram.com/swaggershih/?next=%2F">Instagram</a></li>
   <li><a href="mailto:feelstyle1103@gmail.com">Email</a></li>
