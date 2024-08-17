@@ -178,7 +178,6 @@ body #pipControls #pipProgressBar #progressTime {
   left: 0;
   background-color: rgba(85, 85, 85, 0.6352941176);
   color: #fff;
-  width: 60px;
   padding: 5px;
   font-size: 16px;
   border-radius: 5px;
@@ -187,7 +186,6 @@ body #pipControls #pipProgressBar #progressTime {
 }
 @media screen and (max-width: 470px) {
   body #pipControls #pipProgressBar #progressTime {
-    width: 50px;
     padding: 3px;
     font-size: 12px;
   }
