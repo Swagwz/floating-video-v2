@@ -437,7 +437,7 @@ function secToDate(time) {
   result = result + min.toString().padStart(2, 0) + ":";
 
   restTime -= min * 60;
-  const sec = restTime.toFixed(0);
+  const sec = Math.floor(restTime);
   result = result + sec.toString().padStart(2, 0);
 
   return result;
