@@ -719,13 +719,21 @@ async function enterPiP() {
     navigation.addEventListener("navigate", showNextEp);
 
     $pip("#nextEpisode").addEventListener("click", () => {
-      if (!$doc('button[data-uia="control-next"]')) {
+      // 會倒數的下一集按鈕
+      if ($doc('button[data-uia="next-episode-seamless-button-draining"]')) {
+        $doc(
+          'button[data-uia="next-episode-seamless-button-draining"]'
+        ).click();
+        // 不會倒數的
+      } else if ($doc('button[data-uia="next-episode-seamless-button"]')) {
+        $doc('button[data-uia="next-episode-seamless-button"]').click();
+        // 控制欄上的下一集
+      } else if (!$doc('button[data-uia="control-next"]')) {
         videoContainer.append(video);
         $doc("video").click();
 
         setTimeout(() => {
           $doc('button[data-uia="control-next"]')?.click();
-          $doc('button[data-uia="next-episode-seamless-button"]')?.click();
         }, 500);
       } else {
         videoContainer.append(video);
