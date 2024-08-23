@@ -696,11 +696,20 @@ async function enterPiP() {
   function showNextEp() {
     $pip("#clickToNext").style.display = "flex";
   }
-
+  let getNextEpTitle;
   // 下一集
   if (isAnigamer) {
     $pip("#nextEpisode").addEventListener("click", () => {
       $doc("#nextEpisode").click();
+
+      let currentTitle = $pip("#videoTitle").textContent;
+      getNextEpTitle = setInterval(() => {
+        videoTitle = $doc(".anime_name>h1").textContent;
+        $pip("#videoTitle").textContent = videoTitle;
+        if ($pip("#videoTitle").textContent !== currentTitle) {
+          clearInterval(getNextEpTitle);
+        }
+      }, 500);
     });
   }
 
@@ -876,6 +885,7 @@ async function enterPiP() {
     clearInterval(checkVideo);
     clearInterval(getVideoTitle);
     clearTimeout(mouseTimer);
+    clearInterval(getNextEpTitle);
     navigation.removeEventListener("navigate", showNextEp);
     pipSession.removeEventListener("mouseout", removeInfo);
     pipSession = null;
