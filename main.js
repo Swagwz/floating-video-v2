@@ -580,16 +580,18 @@ async function enterPiP() {
 
   function showProgressTime(e) {
     const rect = progressBar.getBoundingClientRect();
-    let offsetX = e.clientX - rect.left;
+    const x = e.clientX - rect.left;
     const percentage = calcPercent(e);
-    const width = progressTime.offsetWidth;
-    if (offsetX < width / 2) {
-      progressTime.style.left = 0;
-    } else if (offsetX > width / 2 && offsetX < rect.width - width / 2) {
-      progressTime.style.left = (percentage * rect.width) / 100 - width / 2;
-    } else if (offsetX > rect.width - width / 2) {
-      progressTime.style.left = rect.width - width;
+    const timerWidth = progressTime.offsetWidth;
+    let timerPosition;
+    if (x < timerWidth / 2) {
+      timerPosition = "0px";
+    } else if (x >= timerWidth / 2 && x <= rect.width - timerWidth / 2) {
+      timerPosition = `${(percentage * rect.width) / 100 - timerWidth / 2}px`;
+    } else if (x > rect.width - timerWidth / 2) {
+      timerPosition = `${rect.width - timerWidth}px`;
     }
+    progressTime.style.left = timerPosition;
     progressTime.textContent = secToDate((percentage * video.duration) / 100);
   }
 
@@ -818,9 +820,6 @@ async function enterPiP() {
       case "ArrowRight":
         $pip("#btnForward").click();
         break;
-      case "Escape":
-        pipSession.close();
-        break;
       case " ":
         $pip("#btnPlay").click();
         break;
@@ -875,7 +874,9 @@ async function enterPiP() {
   });
 
   pipSession.addEventListener("mouseout", removeInfo);
-
+  pipSession.addEventListener("unload", onLeavePiP.bind(pipSession), {
+    once: true,
+  });
   // 關閉pip時觸發
   function onLeavePiP() {
     if (this !== pipSession) return;
@@ -890,8 +891,5 @@ async function enterPiP() {
     pipSession.removeEventListener("mouseout", removeInfo);
     pipSession = null;
   }
-  pipSession.addEventListener("unload", onLeavePiP.bind(pipSession), {
-    once: true,
-  });
 }
 enterPiP();
